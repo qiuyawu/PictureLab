@@ -411,6 +411,30 @@ public class Picture extends SimplePicture
     this.write("collage.jpg");
   }
   
+  public void myCollage()
+  {
+    Picture flower1 = new Picture("flower1.jpg");
+    Picture flower2 = new Picture("flower2.jpg");
+    Picture flower3 = new Picture("flower1.jpg");
+    this.copy(flower1,100,0);
+    this.copy(flower2,100,100);
+    this.copy(flower3,300,200);
+    Picture flowerNoBlue = new Picture(flower2);
+    flowerNoBlue.zeroBlue();
+    
+    Picture flowerGrayScale = new Picture(flower1);
+    flowerGrayScale.grayscale();
+    
+    Picture flowerNegate = new Picture(flower3);
+    flowerNegate.negate();
+    
+    this.copy(flowerNoBlue,300,60);
+    this.copy(flowerGrayScale,400,80);
+    this.copy(flowerNegate,500,100);
+    this.mirrorVertical();
+    this.write("collage.jpg");
+  }
+  
   
   /** Method to show large changes in color 
     * @param edgeDist the distance for finding edges
@@ -419,8 +443,11 @@ public class Picture extends SimplePicture
   {
     Pixel leftPixel = null;
     Pixel rightPixel = null;
+    Pixel topPixel;
+    Pixel botPixel;
     Pixel[][] pixels = this.getPixels2D();
     Color rightColor = null;
+    Color botColor;
     for (int row = 0; row < pixels.length; row++)
     {
       for (int col = 0; 
@@ -436,7 +463,25 @@ public class Picture extends SimplePicture
           leftPixel.setColor(Color.WHITE);
       }
     }
+    
+    for (int row = 0; row < pixels.length-1; row++)
+    {
+      for (int col = 0; 
+           col < pixels[0].length; col++)
+      {
+        topPixel = pixels[row][col];
+        botPixel = pixels[row+1][col];
+        botColor = botPixel.getColor();
+        if (topPixel.colorDistance(botColor) > 
+            edgeDist)
+          topPixel.setColor(Color.BLACK);
+        else
+          topPixel.setColor(Color.WHITE);
+      }
+    }
   }
+  
+  
   
   
   /* Main method for testing - each class in Java can have a main 
